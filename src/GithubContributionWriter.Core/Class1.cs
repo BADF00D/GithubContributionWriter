@@ -42,7 +42,7 @@ namespace GithubContributionWriter.Core
             var position = 0;
             foreach (var characters in text)
             {
-                var key = characters.ToString();
+                var key = characters.ToString().ToUpper();
                 var character = alphabet[key];
 
                 position = CopyTo(character, contributions, position, count);
@@ -84,7 +84,22 @@ namespace GithubContributionWriter.Core
     {
         private readonly Dictionary<string, Character> _characters;
 
-        public Character this[string key] => _characters[key];
+        private Character MissingCharacter = new Character(string.Empty, 3, 7, new bool[21]);
+
+        public Character this[string key]
+        {
+            get
+            {
+                try
+                {
+                    return _characters[key];
+                }
+                catch (Exception)
+                {
+                    return MissingCharacter;
+                }
+            }
+        }
 
         public Alphabet(IEnumerable<Character> characters)
         {
@@ -92,7 +107,7 @@ namespace GithubContributionWriter.Core
             _characters = enumerable.ToDictionary(c => c.Id);
         }
 
-        public static Alphabet Default => new Alphabet(ParseAlphabet(_defaultAlphabet));
+        public static Alphabet Default => new Alphabet(ParseAlphabet(DefaultAlphabet));
 
         public static IEnumerable<Character> ParseAlphabet(string[] source)
         {
@@ -124,14 +139,14 @@ namespace GithubContributionWriter.Core
             }
         }
 
-        private static readonly string[] _defaultAlphabet =
+        private static readonly string[] DefaultAlphabet =
         {
-            "AXXX BXX  DXX  FXXX 0XXX",
-            "3X X 3X X 3X X 3X   3X X",
-            "6XXX 6XXX 6X X 6XX  6X X",
-            " X X  X X  X X  X    X X",
-            " X X  X X  X X  X    X X",
-            " X X  XXX  XX   X    XXX"
+            "AXXX BXX  CXXX DXX  EXXX FXXX GXXXX HX X IX JXXX KX  X LX   MX X X NX  X OXXX PXXX QXXX  RXXXX SXXX TXXX UX X VX X WX X X XX X YX X ZXXX 0XXX 1 X 2XXX 3XXX 4X   5XXX 6XXX 7XXX 8XXX 9XXX",
+            "3X X 3X X 3X   3X X 3X   3X   4X    3X X 1X 3  X 4X X  3X   5XXXXX 4XX X 3X X 3X X 4X X  4X  X 3X   3 X  3X X 3X X 5X X X 3XXX 3X X 3  X 3X X 2XX 3  X 3  X 3X X 3X   3X   3  X 3X X 3X X",
+            "6XXX 6XXX 6X   6X X 6XX  6XX  6X XX 6XXX 6X 6  X 6XX   6X   6XXXXX 6XXXX 6X X 6XXX 6X X  6XXXX 6XXX 6 X  6X X 6X X 6X X X 6 X  6XXX 6 X  6X X 6 X 6 X  6 XX 6XXX 6XXX 6XXX 6 X  6XXX 6XXX",
+            " X X  X X  X    X X  X    X    X  X  X X  X    X  X X   X    X X X  X XX  X X  X    X X   X X     X   X   X X  X X  X X X  X X   X   X    X X   X  X      X    X    X  X X   X   X X    X",
+            " X X  X X  X    X X  X    X    X  X  X X  X    X  X  X  X    X X X  X  X  X X  X    X X   X  X    X   X   X X  X X  X X X  X X   X   X    X X   X  X      X    X    X  X X   X   X X    X",
+            " X X  XXX  XXX  XX   XXX  X    XXXX  X X  X  XX   X  X  XXX  X X X  X  X  XXX  X    XXXX  X  X  XXX   X   XXX   X   XXXXX  X X   X   XXX  XXX   X  XXX  XXX    X  XXX  XXX   X   XXX  XXX"
         };
 
     }

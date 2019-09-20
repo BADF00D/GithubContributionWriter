@@ -28,17 +28,19 @@ namespace GithubContributionWriter.Gui
             {
                 dateTimeOffset = dateTimeOffset.Subtract(TimeSpan.FromDays((int) dateTimeOffset.DayOfWeek));
             }
-
-            Text = new ReactiveProperty<string>("BADF00D");
+            Text = new ReactiveProperty<string>();
 
             var source = Text
+                .Select(newText => string.IsNullOrWhiteSpace(newText) ? string.Empty : newText)
                 .Select(newText =>
                 {
                     var contributionGrid =
                         GithubContributionsGrid.CreateFakes(dateTimeOffset, newText, Alphabet.Default, 10, 52);
                     return contributionGrid.ToRows()
                         .Select(Observable.Return).ToArray();
-                });
+                })
+                .Publish()
+                .RefCount();
 
             GridItems = new ReactiveProperty<RowViewModel[]>();
             GridItems.Value = new []
@@ -51,8 +53,8 @@ namespace GithubContributionWriter.Gui
                 new RowViewModel("Fri",source.Select(rows => rows[5]).Switch()),
                 new RowViewModel("",source.Select(rows => rows[6]).Switch()),
             };
+            Text.Value = "BADF00D";
 
-            
         }
 
 
