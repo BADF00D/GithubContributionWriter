@@ -13,11 +13,13 @@ namespace GithubContributionWriter.Gui
     internal interface IMainWindowsViewModel
     {
         ReactiveProperty<RowViewModel[]> GridItems { get; }
+        ReactiveProperty<string> Text { get; }
     }
 
     class MainWindowsDesignViewModel : IMainWindowsViewModel, IDisposable
     {
         public ReactiveProperty<RowViewModel[]> GridItems { get; }
+        public ReactiveProperty<string> Text { get; }
 
         public MainWindowsDesignViewModel()
         {
@@ -26,24 +28,33 @@ namespace GithubContributionWriter.Gui
             {
                 dateTimeOffset = dateTimeOffset.Subtract(TimeSpan.FromDays((int) dateTimeOffset.DayOfWeek));
             }
-            var fake = GithubContributionsGrid.CreateFakes(dateTimeOffset, "BADF00D",
-                Alphabet.Default, 10, 52);
-            var debugString = fake.ToDebugString();
-            Debug.WriteLine(debugString);
 
-            var rows = fake.ToRows().ToArray();
+            Text = new ReactiveProperty<string>("BADF00D");
+
+            var source = Text
+                .Select(newText =>
+                {
+                    var contributionGrid =
+                        GithubContributionsGrid.CreateFakes(dateTimeOffset, newText, Alphabet.Default, 10, 52);
+                    return contributionGrid.ToRows()
+                        .Select(Observable.Return).ToArray();
+                });
+
             GridItems = new ReactiveProperty<RowViewModel[]>();
             GridItems.Value = new []
             {
-                new RowViewModel("",Observable.Return(rows[0])),
-                new RowViewModel("",Observable.Return(rows[1])),
-                new RowViewModel("",Observable.Return(rows[2])),
-                new RowViewModel("",Observable.Return(rows[3])),
-                new RowViewModel("",Observable.Return(rows[4])),
-                new RowViewModel("",Observable.Return(rows[5])),
-                new RowViewModel("",Observable.Return(rows[6])),
+                new RowViewModel("",source.Select(rows => rows[0]).Switch()),
+                new RowViewModel("Mon",source.Select(rows => rows[1]).Switch()),
+                new RowViewModel("",source.Select(rows => rows[2]).Switch()),
+                new RowViewModel("Wed",source.Select(rows => rows[3]).Switch()),
+                new RowViewModel("",source.Select(rows => rows[4]).Switch()),
+                new RowViewModel("Fri",source.Select(rows => rows[5]).Switch()),
+                new RowViewModel("",source.Select(rows => rows[6]).Switch()),
             };
+
+            
         }
+
 
         private static Row CreateDummy(DateTimeOffset start)
         {
@@ -60,6 +71,7 @@ namespace GithubContributionWriter.Gui
         public void Dispose()
         {
             GridItems?.Dispose();
+            Text?.Dispose();
         }
     }
 
@@ -96,6 +108,29 @@ namespace GithubContributionWriter.Gui
         public CellViewModel Column27 { get; }
         public CellViewModel Column28 { get; }
         public CellViewModel Column29 { get; }
+        public CellViewModel Column30 { get; }
+        public CellViewModel Column31 { get; }
+        public CellViewModel Column32 { get; }
+        public CellViewModel Column33 { get; }
+        public CellViewModel Column34 { get; }
+        public CellViewModel Column35 { get; }
+        public CellViewModel Column36 { get; }
+        public CellViewModel Column37 { get; }
+        public CellViewModel Column38 { get; }
+        public CellViewModel Column39 { get; }
+        public CellViewModel Column40 { get; }
+        public CellViewModel Column41 { get; }
+        public CellViewModel Column42 { get; }
+        public CellViewModel Column43 { get; }
+        public CellViewModel Column44 { get; }
+        public CellViewModel Column45 { get; }
+        public CellViewModel Column46 { get; }
+        public CellViewModel Column47 { get; }
+        public CellViewModel Column48 { get; }
+        public CellViewModel Column49 { get; }
+        public CellViewModel Column50 { get; }
+        public CellViewModel Column51 { get; }
+        public CellViewModel Column52 { get; }
 
         public RowViewModel(string rowName, IObservable<Row> rowStream)
         {
@@ -130,6 +165,29 @@ namespace GithubContributionWriter.Gui
             Column27 = new CellViewModel(rowStream.Select(rows => rows.Cells[27]));
             Column28 = new CellViewModel(rowStream.Select(rows => rows.Cells[28]));
             Column29 = new CellViewModel(rowStream.Select(rows => rows.Cells[29]));
+            Column30 = new CellViewModel(rowStream.Select(rows => rows.Cells[30]));
+            Column31 = new CellViewModel(rowStream.Select(rows => rows.Cells[31]));
+            Column32 = new CellViewModel(rowStream.Select(rows => rows.Cells[32]));
+            Column33 = new CellViewModel(rowStream.Select(rows => rows.Cells[33]));
+            Column34 = new CellViewModel(rowStream.Select(rows => rows.Cells[34]));
+            Column35 = new CellViewModel(rowStream.Select(rows => rows.Cells[35]));
+            Column36 = new CellViewModel(rowStream.Select(rows => rows.Cells[36]));
+            Column37 = new CellViewModel(rowStream.Select(rows => rows.Cells[37]));
+            Column38 = new CellViewModel(rowStream.Select(rows => rows.Cells[38]));
+            Column39 = new CellViewModel(rowStream.Select(rows => rows.Cells[39]));
+            Column40 = new CellViewModel(rowStream.Select(rows => rows.Cells[40]));
+            Column41 = new CellViewModel(rowStream.Select(rows => rows.Cells[41]));
+            Column42 = new CellViewModel(rowStream.Select(rows => rows.Cells[42]));
+            Column43 = new CellViewModel(rowStream.Select(rows => rows.Cells[43]));
+            Column44 = new CellViewModel(rowStream.Select(rows => rows.Cells[44]));
+            Column45 = new CellViewModel(rowStream.Select(rows => rows.Cells[45]));
+            Column46 = new CellViewModel(rowStream.Select(rows => rows.Cells[46]));
+            Column47 = new CellViewModel(rowStream.Select(rows => rows.Cells[47]));
+            Column48 = new CellViewModel(rowStream.Select(rows => rows.Cells[48]));
+            Column49 = new CellViewModel(rowStream.Select(rows => rows.Cells[49]));
+            Column50 = new CellViewModel(rowStream.Select(rows => rows.Cells[50]));
+            Column51 = new CellViewModel(rowStream.Select(rows => rows.Cells[51]));
+            //Column52 = new CellViewModel(rowStream.Select(rows => rows.Cells[52]));
         }
 
         public void Dispose()
@@ -154,16 +212,39 @@ namespace GithubContributionWriter.Gui
             Column17?.Dispose();
             Column18?.Dispose();
             Column19?.Dispose();
+            Column20?.Dispose();
             Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
-            Column21?.Dispose();
+            Column22?.Dispose();
+            Column23?.Dispose();
+            Column24?.Dispose();
+            Column25?.Dispose();
+            Column26?.Dispose();
+            Column27?.Dispose();
+            Column28?.Dispose();
+            Column29?.Dispose();
+            Column30?.Dispose();
+            Column31?.Dispose();
+            Column32?.Dispose();
+            Column33?.Dispose();
+            Column34?.Dispose();
+            Column35?.Dispose();
+            Column36?.Dispose();
+            Column37?.Dispose();
+            Column38?.Dispose();
+            Column39?.Dispose();
+            Column40?.Dispose();
+            Column41?.Dispose();
+            Column42?.Dispose();
+            Column43?.Dispose();
+            Column44?.Dispose();
+            Column45?.Dispose();
+            Column46?.Dispose();
+            Column47?.Dispose();
+            Column48?.Dispose();
+            Column49?.Dispose();
+            Column50?.Dispose();
+            Column51?.Dispose();
+            Column52?.Dispose();
         }
     }
 
